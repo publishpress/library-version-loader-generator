@@ -1,9 +1,14 @@
+#!/usr/bin/env php
 <?php
 
 echo "Generating version manager files...\n";
 
+$binDir = $_composer_bin_dir ?? __DIR__ . '/../../vendor/bin';
+$projectPath = dirname($binDir, 2);
+
+
 // Get current version from composer.json
-$composerJson = file_get_contents(__DIR__ . '/../composer.json');
+$composerJson = file_get_contents($projectPath . '/composer.json');
 $composerData = json_decode($composerJson, true);
 $version = $composerData['version'];
 $name = $composerData['name'];
@@ -28,9 +33,9 @@ $actionPrefix = str_replace('\\', '', $actionPrefix);
 $actionPrefix = str_replace('publish_press', 'publishpress', $actionPrefix);
 $actionPrefix = ltrim($actionPrefix, '_');
 
-function generateIncludeFile($namespace, $version, $versionStrForFunction, $classTest, $actionPrefix)
+function generateIncludeFile($namespace, $version, $versionStrForFunction, $classTest, $actionPrefix, $projectPath)
 {
-    $includeFile = __DIR__ . '/../src/include.php';
+    $includeFile = $projectPath . '/lib/include.php';
 
     if (file_exists($includeFile)) {
         unlink($includeFile);
@@ -84,12 +89,12 @@ TEMPLATE;
     ];
     $fileContent = "<?php\n\n" . str_replace(array_keys($placeholders), array_values($placeholders), $template);
 
-    file_put_contents(__DIR__ . '/../src/include.php', $fileContent);
+    file_put_contents($projectPath . '/lib/include.php', $fileContent);
 }
 
-function generateVersionClassFile($namespace, $version, $versionStrForFunction)
+function generateVersionClassFile($namespace, $version, $versionStrForFunction, $projectPath)
 {
-    $versionClassFile = __DIR__ . '/../src/Versions.php';
+    $versionClassFile = $projectPath . '/lib/Versions.php';
 
     if (file_exists($versionClassFile)) {
         unlink($versionClassFile);
@@ -195,13 +200,12 @@ TEMPLATE;
     ];
     $fileContent = "<?php\n\n" . str_replace(array_keys($placeholders), array_values($placeholders), $template);
 
-    file_put_contents(__DIR__ . '/../src/Versions.php', $fileContent);
-
+    file_put_contents($projectPath . '/lib/Versions.php', $fileContent);
 }
 
-function generateTestFile($namespace, $version, $versionStrForFunction, $classTest, $actionPrefix)
+function generateTestFile($namespace, $version, $versionStrForFunction, $classTest, $actionPrefix, $projectPath)
 {
-    $testFile = __DIR__ . '/../tests/VersionManagerTest.php';
+    $testFile = $projectPath . '/tests/VersionManagerTest.php';
 
     if (file_exists($testFile)) {
         unlink($testFile);
@@ -268,7 +272,7 @@ class VersionsCest
         \$I->assertTrue(\$didAction);
     }
 }
-        
+
 TEMPLATE;
 
     $placeholders = [
@@ -281,12 +285,32 @@ TEMPLATE;
     ];
     $fileContent = "<?php\n\n" . str_replace(array_keys($placeholders), array_values($placeholders), $template);
 
-    file_put_contents(__DIR__ . '/../tests/wpunit/VersionsCest.php', $fileContent);
+    file_put_contents($projectPath . '/tests/wpunit/VersionsCest.php', $fileContent);
 }
 
+generateIncludeFile(
+    $namespace,
+    $version,
+    $versionStrForFunction,
+    $classTest,
+    $actionPrefix,
+    $projectPath
+);
 
-generateIncludeFile($namespace, $version, $versionStrForFunction, $classTest, $actionPrefix);
-generateVersionClassFile($namespace, $version, $versionStrForFunction);
-generateTestFile($namespace, $version, $versionStrForFunction, $classTest, $actionPrefix);
+generateVersionClassFile(
+    $namespace,
+    $version,
+    $versionStrForFunction,
+    $projectPath
+);
+
+generateTestFile(
+    $namespace,
+    $version,
+    $versionStrForFunction,
+    $classTest,
+    $actionPrefix,
+    $projectPath
+);
 
 echo "Versions file generated successfully\n";

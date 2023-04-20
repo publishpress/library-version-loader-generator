@@ -3,11 +3,6 @@
     "description": "Composer script to generate the version loader files for libraries on PubilshPress",
     "type": "library",
     "license": "GPL-2.0-or-later",
-    "autoload": {
-        "files": [
-            "src/version-loader-generator.php"
-        ]
-    },
     "authors": [
         {
             "name": "Anderson Martins",
@@ -15,6 +10,12 @@
         }
     ],
     "require-dev": {
+        "php": ">=7.2.5"
+    },
+    "bin": [
+        "bin/version-loader-generator"
+    ],
+    "require": {
         "ext-json": "*"
     }
 }
