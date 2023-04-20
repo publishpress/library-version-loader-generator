@@ -1,0 +1,97 @@
+{
+    "name": "publishpress/psr-container",
+    "version": "2.0.1.4",
+    "type": "library",
+    "description": "Common Container Interface (PHP FIG PSR-11), prefixed for PublishPress plugins",
+    "keywords": [
+        "psr",
+        "psr-11",
+        "container",
+        "container-interop",
+        "container-interface",
+        "publishpress"
+    ],
+    "homepage": "https://github.com/php-fig/container",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "PHP-FIG",
+            "homepage": "https://www.php-fig.org/"
+        },
+        {
+            "name": "PublishPress",
+            "email": "help@publishpress.com"
+        }
+    ],
+    "autoload": {
+        "files": [
+            "lib/include.php"
+        ]
+    },
+    "require": {
+        "php": ">=7.2.5"
+    },
+    "require-dev": {
+        "psr/container": "2.0.1",
+        "brianhenryie/strauss": "^0.14.0",
+        "lucatume/wp-browser": "^3.1",
+        "codeception/module-asserts": "^1.0",
+        "codeception/module-phpbrowser": "^1.0",
+        "codeception/module-webdriver": "^1.0",
+        "codeception/module-db": "^1.0",
+        "codeception/module-filesystem": "^1.0",
+        "codeception/module-cli": "^1.0",
+        "codeception/util-universalframework": "^1.0",
+        "publishpress/codeception-extension-extended-copier": "^1.0",
+        "publishpress/version-loader-generator": "^1.0"
+    },
+    "extra": {
+        "generator":{
+            "lib-class-test": "interface_exists('PublishPress\\Psr\\Container\\ContainerInterface')"
+        },
+        "strauss": {
+            "target_directory": "lib",
+            "namespace_prefix": "PublishPress\\",
+            "classmap_prefix": "PublishPress_",
+            "constant_prefix": "PUBLISHPRESS_",
+            "include_author": "true",
+            "classmap_output": "true",
+            "packages": [
+                "psr/container"
+            ],
+            "override_autoload": [],
+            "exclude_from_copy": {
+                "packages": [],
+                "namespaces": [],
+                "file_patterns": []
+            },
+            "exclude_from_prefix": {
+                "packages": [],
+                "namespaces": [],
+                "file_patterns": []
+            },
+            "namespace_replacement_patterns": [],
+            "delete_vendor_packages": true,
+            "delete_vendor_files": true
+        }
+    },
+    "scripts": {
+        "strauss": [
+            "vendor/bin/strauss"
+        ],
+        "generate-files": [
+            "vendor/bin/version-loader-generator"
+        ],
+        "post-install-cmd": [
+            "@strauss",
+            "@generate-files"
+        ],
+        "post-update-cmd": [
+            "@strauss",
+            "@generate-files"
+        ],
+        "test": [
+            "vendor/bin/codecept run wpunit"
+        ]
+    }
+}

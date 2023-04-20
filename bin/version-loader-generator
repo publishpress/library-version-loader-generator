@@ -43,6 +43,22 @@ function generateIncludeFile($namespace, $version, $versionStrForFunction, $clas
 
     echo "Generating file src/include.php\n";
 
+    $constantNamePrefix = preg_replace_callback(
+        '/([A-Z])/',
+        function ($matches) {
+            return '_' . $matches[1];
+        },
+        $namespace
+    );
+    $constantNamePrefix = ltrim($constantNamePrefix, '_');
+
+    $constantNamePrefix = strtoupper(str_replace('\\', '_', $constantNamePrefix));
+    $constantNamePrefix = str_replace('__', '_', $constantNamePrefix);
+    $constantNamePrefix = str_replace('PUBLISH_PRESS', 'PUBLISHPRESS', $constantNamePrefix);
+
+    $versionConstantName = $constantNamePrefix . '_VERSION';
+    $includedConstantName = $constantNamePrefix . '_INCLUDED';
+
     // Create the include.php file
     $template = <<<TEMPLATE
 /*****************************************************************
@@ -52,7 +68,7 @@ function generateIncludeFile($namespace, $version, $versionStrForFunction, $clas
  * Do not edit it manually!
  ****************************************************************/
 
-namespace %NAMESPACE%;
+namespace {$namespace};
 
 use function add_action;
 use function do_action;
@@ -61,40 +77,42 @@ if (! function_exists('add_action')) {
     return;
 }
 
-if (! function_exists(__NAMESPACE__ . '\\register%VERSION_STR%')) {
-    if (! class_exists('%NAMESPACE%\\Versions')) {
+if (! function_exists(__NAMESPACE__ . '\\register{$versionStrForFunction}')) {
+    if (! defined('{$includedConstantName}')) {
+        define('{$includedConstantName}', __DIR__);
+    }
+        
+    if (! class_exists('{$namespace}\\Versions')) {
         require_once __DIR__ . '/Versions.php';
 
         add_action('plugins_loaded', [Versions::class, 'initializeLatestVersion'], 1, 0);
     }
 
-    add_action('plugins_loaded', __NAMESPACE__ . '\\register%VERSION_STR%', 1, 0);
+    add_action('plugins_loaded', __NAMESPACE__ . '\\register{$versionStrForFunction}', 1, 0);
 
-    function register%VERSION_STR%()
+    function register{$versionStrForFunction}()
     {
-        if (! %CLASS_TEST%) {
+        if (! {$classTest}) {
             \$versions = Versions::getInstance();
-            \$versions->register('%VERSION%', __NAMESPACE__ . '\\initialize%VERSION_STR%');
+            \$versions->register('{$version}', __NAMESPACE__ . '\\initialize{$versionStrForFunction}');
         }
     }
 
-    function initialize%VERSION_STR%()
+    function initialize{$versionStrForFunction}()
     {
         require_once __DIR__ . '/autoload.php';
-        do_action('%ACTION_PREFIX%_%VERSION_STR%_initialized');
+        
+        if (! defined('{$versionConstantName}')) {
+            define('{$versionConstantName}', '{$version}');
+        }
+        
+        do_action('{$actionPrefix}_{$versionStrForFunction}_initialized');
     }
 }
 
 TEMPLATE;
 
-    $placeholders = [
-        '%NAMESPACE%' => $namespace,
-        '%VERSION%' => $version,
-        '%VERSION_STR%' => $versionStrForFunction,
-        '%CLASS_TEST%' => $classTest,
-        '%ACTION_PREFIX%' => $actionPrefix,
-    ];
-    $fileContent = "<?php\n\n" . str_replace(array_keys($placeholders), array_values($placeholders), $template);
+    $fileContent = "<?php\n\n" . $template;
 
     file_put_contents($projectPath . '/lib/include.php', $fileContent);
 }
@@ -121,9 +139,9 @@ function generateVersionClassFile($namespace, $version, $versionStrForFunction, 
  * Do not edit it manually!
  ****************************************************************/
  
-namespace %NAMESPACE%;
+namespace {$namespace};
 
-if (! class_exists('%NAMESPACE_STR%\\\\Versions')) {
+if (! class_exists('{$namespaceStr}\\\\Versions')) {
     /**
      * Based on the ActionScheduler_Versions class from Action Scheduler library.
      */
@@ -198,14 +216,7 @@ if (! class_exists('%NAMESPACE_STR%\\\\Versions')) {
 }
 
 TEMPLATE;
-
-    $placeholders = [
-        '%NAMESPACE%' => $namespace,
-        '%NAMESPACE_STR%' => $namespaceStr,
-        '%VERSION%' => $version,
-        '%VERSION_STR%' => $versionStrForFunction,
-    ];
-    $fileContent = "<?php\n\n" . str_replace(array_keys($placeholders), array_values($placeholders), $template);
+    $fileContent = "<?php\n\n" . $template;
 
     file_put_contents($projectPath . '/lib/Versions.php', $fileContent);
 }
@@ -231,7 +242,7 @@ function generateTestFile($namespace, $version, $versionStrForFunction, $classTe
  * Do not edit it manually!
  ****************************************************************/
 
-use %NAMESPACE%\Versions;
+use {$namespace}\Versions;
 
 class VersionsCest
 {
@@ -243,9 +254,9 @@ class VersionsCest
 
         \$I->assertNotEmpty(\$registeredVersions);
         \$I->assertEquals([
-            '2.0.0.1' => '%NAMESPACE%\initialize2Dot0Dot0Dot1',
-            '2.0.0.2' => '%NAMESPACE%\initialize2Dot0Dot0Dot2',
-            '%VERSION%' => '%NAMESPACE%\initialize%VERSION_STR%',
+            '2.0.0.1' => '{$namespace}\initialize2Dot0Dot0Dot1',
+            '2.0.0.2' => '{$namespace}\initialize2Dot0Dot0Dot2',
+            '{$version}' => '{$namespace}\initialize{$versionStrForFunction}',
         ], \$registeredVersions);
     }
 
@@ -255,7 +266,7 @@ class VersionsCest
 
         \$latestVersion = \$versions->latestVersion();
 
-        \$I->assertEquals('%VERSION%', \$latestVersion);
+        \$I->assertEquals('{$version}', \$latestVersion);
     }
 
     public function testLatestVersionCallbackIsTheLastOne(WpunitTester \$I)
@@ -264,7 +275,7 @@ class VersionsCest
 
         \$latestVersionCallback = \$versions->latestVersionCallback();
 
-        \$I->assertEquals('%NAMESPACE%\\initialize%VERSION_STR%', \$latestVersionCallback);
+        \$I->assertEquals('{$namespace}\\initialize{$versionStrForFunction}', \$latestVersionCallback);
     }
 
     public function testInitializeLatestVersion(WpunitTester \$I)
@@ -273,24 +284,16 @@ class VersionsCest
 
         \$versions->initializeLatestVersion();
 
-        \$I->assertTrue(%CLASS_TEST%);
+        \$I->assertTrue({$classTest});
 
-        \$didAction = (bool)did_action('%ACTION_PREFIX%_%VERSION_STR%_initialized');
+        \$didAction = (bool)did_action('{$actionPrefix}_{$versionStrForFunction}_initialized');
         \$I->assertTrue(\$didAction);
     }
 }
 
 TEMPLATE;
 
-    $placeholders = [
-        '%NAMESPACE%' => $namespace,
-        '%NAMESPACE_STR%' => $namespaceStr,
-        '%VERSION%' => $version,
-        '%VERSION_STR%' => $versionStrForFunction,
-        '%CLASS_TEST%' => $classTest,
-        '%ACTION_PREFIX%' => $actionPrefix,
-    ];
-    $fileContent = "<?php\n\n" . str_replace(array_keys($placeholders), array_values($placeholders), $template);
+    $fileContent = "<?php\n\n" . $template;
 
     file_put_contents($projectPath . '/tests/wpunit/VersionsCest.php', $fileContent);
 }
