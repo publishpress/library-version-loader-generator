@@ -1,25 +1,30 @@
 {
-    "name": "publishpress/version-loader-generator",
-    "description": "Composer script to generate the version loader files for libraries on PubilshPress",
-    "type": "library",
-    "license": "GPL-2.0-or-later",
-    "authors": [
-        {
-            "name": "Anderson Martins",
-            "email": "anderson@publishpress.com"
-        }
-    ],
-    "require-dev": {
-        "php": ">=7.2.5",
-        "lucatume/wp-browser": "^3.1",
-        "codeception/module-asserts": "^1.0",
-        "codeception/module-filesystem": "^1.0",
-        "codeception/util-universalframework": "^1.0"
-    },
-    "bin": [
-        "bin/version-loader-generator"
-    ],
-    "require": {
-        "ext-json": "*"
+  "name": "publishpress/version-loader-generator",
+  "description": "Composer script to generate the version loader files for libraries on PubilshPress",
+  "type": "library",
+  "license": "GPL-2.0-or-later",
+  "authors": [
+    {
+      "name": "Anderson Martins",
+      "email": "anderson@publishpress.com"
     }
+  ],
+  "require-dev": {
+    "php": ">=7.2.5",
+    "lucatume/wp-browser": "^3.1",
+    "codeception/module-asserts": "^1.0",
+    "codeception/module-filesystem": "^1.0",
+    "codeception/util-universalframework": "^1.0"
+  },
+  "bin": [
+    "bin/version-loader-generator"
+  ],
+  "require": {
+    "ext-json": "*"
+  },
+  "scripts": {
+    "test": [
+      "vendor/bin/codecept run unit"
+    ]
+  }
 }
