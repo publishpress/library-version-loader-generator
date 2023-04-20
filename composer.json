@@ -1,0 +1,20 @@
+{
+    "name": "publishpress/version-loader-generator",
+    "description": "Composer script to generate the version loader files for libraries on PubilshPress",
+    "type": "library",
+    "license": "GPL-2.0-or-later",
+    "autoload": {
+        "files": [
+            "src/version-loader-generator.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "Anderson Martins",
+            "email": "anderson@publishpress.com"
+        }
+    ],
+    "require-dev": {
+        "ext-json": "*"
+    }
+}
