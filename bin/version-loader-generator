@@ -73,7 +73,7 @@ if (! function_exists(__NAMESPACE__ . '\\%VERSION_STR%')) {
 
     function initialize%VERSION_STR%()
     {
-        require_once __DIR__ . '/../lib/autoload.php';
+        require_once __DIR__ . '/autoload.php';
         do_action('%ACTION_PREFIX%_%VERSION_STR%_initialized');
     }
 }
