@@ -61,7 +61,7 @@ if (! function_exists('add_action')) {
     return;
 }
 
-if (! function_exists(__NAMESPACE__ . '\\%VERSION_STR%')) {
+if (! function_exists(__NAMESPACE__ . '\\register%VERSION_STR%')) {
     if (! class_exists('%NAMESPACE%\\Versions')) {
         require_once __DIR__ . '/Versions.php';
 
