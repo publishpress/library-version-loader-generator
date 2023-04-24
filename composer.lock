@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "51db52827c5b07c731ef9a41b56ad270",
+    "content-hash": "b9a4b5c0f24e7834635bfe87516f26a6",
     "packages": [],
     "packages-dev": [
         {
@@ -2421,43 +2421,6 @@
                 "source": "https://github.com/php-fig/simple-cache/tree/3.0.0"
             },
             "time": "2021-10-29T13:26:27+00:00"
-        },
-        {
-            "name": "publishpress/codeception-extension-extended-copier",
-            "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/publishpress/codeception-extension-extended-copier.git",
-                "reference": "03e05488deaed4935229cfcc77b1d177c679136c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/publishpress/codeception-extension-extended-copier/zipball/03e05488deaed4935229cfcc77b1d177c679136c",
-                "reference": "03e05488deaed4935229cfcc77b1d177c679136c",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "PublishPress\\Codeception\\Extension\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-2.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "Anderson Martins",
-                    "email": "anderson@publishpress.com"
-                }
-            ],
-            "description": "Codeception extension that extends WPBrowser's Copier extension, allowing to create parent directories and copy the same files multiple times.",
-            "support": {
-                "issues": "https://github.com/publishpress/codeception-extension-extended-copier/issues",
-                "source": "https://github.com/publishpress/codeception-extension-extended-copier/tree/1.0.0"
-            },
-            "time": "2023-04-19T15:56:57+00:00"
         },
         {
             "name": "ralouphie/getallheaders",

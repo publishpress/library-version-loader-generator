@@ -59,6 +59,8 @@ function generateIncludeFile($namespace, $version, $versionStrForFunction, $clas
     $versionConstantName = $constantNamePrefix . '_VERSION';
     $includedConstantName = $constantNamePrefix . '_INCLUDED';
 
+    $priorityForAction = -20;
+
     // Create the include.php file
     $template = <<<TEMPLATE
 /*****************************************************************
@@ -85,10 +87,10 @@ if (! function_exists(__NAMESPACE__ . '\\register{$versionStrForFunction}')) {
     if (! class_exists('{$namespace}\\Versions')) {
         require_once __DIR__ . '/Versions.php';
 
-        add_action('plugins_loaded', [Versions::class, 'initializeLatestVersion'], 1, 0);
+        add_action('plugins_loaded', [Versions::class, 'initializeLatestVersion'], {$priorityForAction}, 0);
     }
 
-    add_action('plugins_loaded', __NAMESPACE__ . '\\register{$versionStrForFunction}', 1, 0);
+    add_action('plugins_loaded', __NAMESPACE__ . '\\register{$versionStrForFunction}', {$priorityForAction}, 0);
 
     function register{$versionStrForFunction}()
     {

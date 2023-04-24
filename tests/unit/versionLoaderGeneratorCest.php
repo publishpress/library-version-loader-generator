@@ -50,7 +50,7 @@ class versionLoaderGeneratorCest
         $I->assertTrue(
             DummyWPActionsStore::hasAction('plugins_loaded', [
                 'callback' => 'PublishPress\PsrContainer\register2Dot0Dot1Dot4',
-                'priority' => 1,
+                'priority' => -20,
                 'accepted_args' => 0,
             ]),
             'Action plugins_loaded, for PublishPress\PsrContainer\register2Dot0Dot1Dot4 is not registered'
@@ -62,7 +62,7 @@ class versionLoaderGeneratorCest
                     'PublishPress\\PsrContainer\\Versions',
                     'initializeLatestVersion'
                 ],
-                'priority' => 1,
+                'priority' => -20,
                 'accepted_args' => 0,
             ]),
             'Action plugins_loaded, for PublishPress\PsrContainer\Versions::initializeLatestVersion is not registered'
