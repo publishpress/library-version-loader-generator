@@ -13,6 +13,8 @@ $composerData = json_decode($composerJson, true);
 $version = $composerData['version'];
 $name = $composerData['name'];
 $srcDir = $composerData['extra']['generator']['src-dir'] ?? 'lib';
+$actionInitializingPriority = $composerData['extra']['generator']['action-initialize-priority'] ?? '-90';
+$actionRegisteringPriority = $composerData['extra']['generator']['action-register-priority'] ?? '-100';
 
 // Convert the $name to a valid PHP namespace using camel case
 $namespace = str_replace('-', '', ucwords($name, '-/\\'));
@@ -41,7 +43,9 @@ function generateIncludeFile(
     $classTest,
     $actionPrefix,
     $projectPath,
-    $srcDir
+    $srcDir,
+    $actionInitializingPriority,
+    $actionRegisteringPriority
 ) {
     $includeFile = $projectPath . '/' . $srcDir . '/include.php';
 
@@ -66,8 +70,6 @@ function generateIncludeFile(
 
     $versionConstantName = $constantNamePrefix . '_VERSION';
     $includedConstantName = $constantNamePrefix . '_INCLUDED';
-
-    $priorityForAction = -20;
 
     // Create the include.php file
     $template = <<<TEMPLATE
@@ -95,10 +97,10 @@ if (! function_exists(__NAMESPACE__ . '\\register{$versionStrForFunction}')) {
     if (! class_exists('{$namespace}\\Versions')) {
         require_once __DIR__ . '/Versions.php';
 
-        add_action('plugins_loaded', [Versions::class, 'initializeLatestVersion'], {$priorityForAction}, 0);
+        add_action('plugins_loaded', [Versions::class, 'initializeLatestVersion'], {$actionInitializingPriority}, 0);
     }
 
-    add_action('plugins_loaded', __NAMESPACE__ . '\\register{$versionStrForFunction}', {$priorityForAction}, 0);
+    add_action('plugins_loaded', __NAMESPACE__ . '\\register{$versionStrForFunction}', {$actionRegisteringPriority}, 0);
 
     function register{$versionStrForFunction}()
     {
@@ -315,7 +317,9 @@ generateIncludeFile(
     $classTest,
     $actionPrefix,
     $projectPath,
-    $srcDir
+    $srcDir,
+    $actionInitializingPriority,
+    $actionRegisteringPriority
 );
 
 generateVersionClassFile(
