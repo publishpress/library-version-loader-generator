@@ -47,7 +47,8 @@
     },
     "extra": {
         "generator":{
-            "lib-class-test": "interface_exists('PublishPress\\Psr\\Container\\ContainerInterface')"
+            "lib-class-test": "interface_exists('PublishPress\\Psr\\Container\\ContainerInterface')",
+            "src-dir": "src"
         },
         "strauss": {
             "target_directory": "lib",

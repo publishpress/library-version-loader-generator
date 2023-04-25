@@ -18,14 +18,9 @@ class versionLoaderGeneratorCest
             'cd ./tests/_output/dummy-library && chmod +x ./vendor/bin/version-loader-generator && ./vendor/bin/version-loader-generator'
         );
 
-        $I->seeFileFound($this->destinationPath . '/lib/include.php');
+        $I->seeFileFound($this->destinationPath . '/src/include.php');
 
-        include $this->destinationPath . '/lib/include.php';
-    }
-
-    public function _after(UnitTester $I)
-    {
-//        $I->deleteDir($this->destinationPath);
+        include $this->destinationPath . '/src/include.php';
     }
 
     public function testGenerationOfIncludeFile(UnitTester $I)
@@ -34,7 +29,7 @@ class versionLoaderGeneratorCest
             defined('PUBLISHPRESS_PSR_CONTAINER_INCLUDED'),
             'Constant PUBLISHPRESS_PSR_CONTAINER_INCLUDED is not defined'
         );
-        $I->assertEquals(PUBLISHPRESS_PSR_CONTAINER_INCLUDED, realpath($this->destinationPath . '/lib'));
+        $I->assertEquals(PUBLISHPRESS_PSR_CONTAINER_INCLUDED, realpath($this->destinationPath . '/src'));
         $I->assertTrue(
             function_exists('PublishPress\\PSRContainer\\register2Dot0Dot1Dot4'),
             'Function PublishPress\\PSRContainer\\register2Dot0Dot1Dot4 is not defined'
@@ -104,7 +99,7 @@ class versionLoaderGeneratorCest
 
     public function testGenerationOfVersionsClass(UnitTester $I)
     {
-        $I->seeFileFound($this->destinationPath . '/lib/Versions.php');
+        $I->seeFileFound($this->destinationPath . '/src/Versions.php');
 
         $I->assertTrue(
             class_exists('PublishPress\\PsrContainer\\Versions'),

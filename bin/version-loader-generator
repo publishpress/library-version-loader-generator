@@ -12,6 +12,7 @@ $composerJson = file_get_contents($projectPath . '/composer.json');
 $composerData = json_decode($composerJson, true);
 $version = $composerData['version'];
 $name = $composerData['name'];
+$srcDir = $composerData['extra']['generator']['src-dir'] ?? 'lib';
 
 // Convert the $name to a valid PHP namespace using camel case
 $namespace = str_replace('-', '', ucwords($name, '-/\\'));
@@ -33,9 +34,16 @@ $actionPrefix = str_replace('\\', '', $actionPrefix);
 $actionPrefix = str_replace('publish_press', 'publishpress', $actionPrefix);
 $actionPrefix = ltrim($actionPrefix, '_');
 
-function generateIncludeFile($namespace, $version, $versionStrForFunction, $classTest, $actionPrefix, $projectPath)
-{
-    $includeFile = $projectPath . '/lib/include.php';
+function generateIncludeFile(
+    $namespace,
+    $version,
+    $versionStrForFunction,
+    $classTest,
+    $actionPrefix,
+    $projectPath,
+    $srcDir
+) {
+    $includeFile = $projectPath . '/' . $srcDir . '/include.php';
 
     if (file_exists($includeFile)) {
         unlink($includeFile);
@@ -116,12 +124,12 @@ TEMPLATE;
 
     $fileContent = "<?php\n\n" . $template;
 
-    file_put_contents($projectPath . '/lib/include.php', $fileContent);
+    file_put_contents($projectPath . '/' . $srcDir . '/include.php', $fileContent);
 }
 
-function generateVersionClassFile($namespace, $version, $versionStrForFunction, $projectPath)
+function generateVersionClassFile($namespace, $version, $versionStrForFunction, $projectPath, $srcDir)
 {
-    $versionClassFile = $projectPath . '/lib/Versions.php';
+    $versionClassFile = $projectPath . '/' . $srcDir . '/Versions.php';
 
     if (file_exists($versionClassFile)) {
         unlink($versionClassFile);
@@ -220,7 +228,7 @@ if (! class_exists('{$namespaceStr}\\\\Versions')) {
 TEMPLATE;
     $fileContent = "<?php\n\n" . $template;
 
-    file_put_contents($projectPath . '/lib/Versions.php', $fileContent);
+    file_put_contents($projectPath . '/' . $srcDir . '/Versions.php', $fileContent);
 }
 
 function generateTestFile($namespace, $version, $versionStrForFunction, $classTest, $actionPrefix, $projectPath)
@@ -306,14 +314,16 @@ generateIncludeFile(
     $versionStrForFunction,
     $classTest,
     $actionPrefix,
-    $projectPath
+    $projectPath,
+    $srcDir
 );
 
 generateVersionClassFile(
     $namespace,
     $version,
     $versionStrForFunction,
-    $projectPath
+    $projectPath,
+    $srcDir
 );
 
 generateTestFile(
