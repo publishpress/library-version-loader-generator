@@ -16,6 +16,7 @@ $extra = $composerData['extra']['generator'];
 $srcDir = $extra['src-dir'] ?? 'lib';
 $actionInitializingPriority = $extra['action-initialize-priority'] ?? '-90';
 $actionRegisteringPriority = $extra['action-register-priority'] ?? '-100';
+$generateTestFile = $extra['generate-test-file'] ?? true;
 
 // Convert the $name to a valid PHP namespace using camel case
 $namespace = $extra['namespace'] ?? null;
@@ -334,13 +335,15 @@ generateVersionClassFile(
     $srcDir
 );
 
-generateTestFile(
-    $namespace,
-    $version,
-    $versionStrForFunction,
-    $classTest,
-    $actionPrefix,
-    $projectPath
-);
+if ($generateTestFile) {
+    generateTestFile(
+        $namespace,
+        $version,
+        $versionStrForFunction,
+        $classTest,
+        $actionPrefix,
+        $projectPath
+    );
+}
 
 echo "Versions file generated successfully\n";
