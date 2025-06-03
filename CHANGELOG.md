@@ -9,3 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Added ability to customize namespace through `extra.generator.namespace` in composer.json configuration.
 
+## [1.2.1] - Jun 03, 2025
+
+### Added
+
+- Added ability to control test file generation through `extra.generator.generate-test-file` configuration option in composer.json.
