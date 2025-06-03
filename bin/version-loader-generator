@@ -12,18 +12,22 @@ $composerJson = file_get_contents($projectPath . '/composer.json');
 $composerData = json_decode($composerJson, true);
 $version = $composerData['version'];
 $name = $composerData['name'];
-$srcDir = $composerData['extra']['generator']['src-dir'] ?? 'lib';
-$actionInitializingPriority = $composerData['extra']['generator']['action-initialize-priority'] ?? '-90';
-$actionRegisteringPriority = $composerData['extra']['generator']['action-register-priority'] ?? '-100';
+$extra = $composerData['extra']['generator'];
+$srcDir = $extra['src-dir'] ?? 'lib';
+$actionInitializingPriority = $extra['action-initialize-priority'] ?? '-90';
+$actionRegisteringPriority = $extra['action-register-priority'] ?? '-100';
 
 // Convert the $name to a valid PHP namespace using camel case
-$namespace = str_replace('-', '', ucwords($name, '-/\\'));
-$namespace = str_replace('/', '\\', $namespace);
-$namespace = str_replace('Publishpress', 'PublishPress', $namespace);
+$namespace = $extra['namespace'] ?? null;
+if (empty($namespace)) {
+    $namespace = str_replace('-', '', ucwords($name, '-/\\'));
+    $namespace = str_replace('/', '\\', $namespace);
+    $namespace = str_replace('Publishpress', 'PublishPress', $namespace);
+}
 
 $versionStrForFunction = str_replace('.', 'Dot', $version);
 
-$classTest = $composerData['extra']['generator']['lib-class-test'];
+$classTest = $extra['lib-class-test'];
 
 $actionPrefix = preg_replace_callback(
     '/([A-Z])/',
@@ -75,8 +79,8 @@ function generateIncludeFile(
     $template = <<<TEMPLATE
 /*****************************************************************
  * This file is generated on composer update command by
- * a custom script. 
- * 
+ * a custom script.
+ *
  * Do not edit it manually!
  ****************************************************************/
 
@@ -93,7 +97,7 @@ if (! function_exists(__NAMESPACE__ . '\\register{$versionStrForFunction}')) {
     if (! defined('{$includedConstantName}')) {
         define('{$includedConstantName}', __DIR__);
     }
-        
+
     if (! class_exists('{$namespace}\\Versions')) {
         require_once __DIR__ . '/Versions.php';
 
@@ -113,11 +117,11 @@ if (! function_exists(__NAMESPACE__ . '\\register{$versionStrForFunction}')) {
     function initialize{$versionStrForFunction}()
     {
         require_once __DIR__ . '/autoload.php';
-        
+
         if (! defined('{$versionConstantName}')) {
             define('{$versionConstantName}', '{$version}');
         }
-        
+
         do_action('{$actionPrefix}_{$versionStrForFunction}_initialized');
     }
 }
@@ -146,11 +150,11 @@ function generateVersionClassFile($namespace, $version, $versionStrForFunction, 
 
 /*****************************************************************
  * This file is generated on composer update command by
- * a custom script. 
- * 
+ * a custom script.
+ *
  * Do not edit it manually!
  ****************************************************************/
- 
+
 namespace {$namespace};
 
 if (! class_exists('{$namespaceStr}\\\\Versions')) {
@@ -249,8 +253,8 @@ function generateTestFile($namespace, $version, $versionStrForFunction, $classTe
     $template = <<<TEMPLATE
 /*****************************************************************
  * This file is generated on composer update command by
- * a custom script. 
- * 
+ * a custom script.
+ *
  * Do not edit it manually!
  ****************************************************************/
 
