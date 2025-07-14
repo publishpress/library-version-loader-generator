@@ -14,3 +14,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 - Added ability to control test file generation through `extra.generator.generate-test-file` configuration option in composer.json.
+
+## [1.2.2] - Jul 14, 2025
+
+### Fixed
+
+- Fix the support for pre-release version numbers that contain: alpha, beta, rc.
