@@ -27,9 +27,13 @@ if (empty($namespace)) {
 }
 
 $versionStrForFunction = str_replace('.', 'Dot', $version);
+
 preg_match('/(alpha|beta|rc)/', $version, $matches);
 $isPreRelease = !empty($matches);
-$versionStrForFunction = str_replace($matches[0], ucfirst($matches[0]), $versionStrForFunction);
+if ($isPreRelease) {
+    $versionStrForFunction = str_replace($matches[0], ucfirst($matches[0]), $versionStrForFunction);
+}
+
 $versionStrForFunction = str_replace('-', 'Dash', $versionStrForFunction);
 
 $classTest = $extra['lib-class-test'];
