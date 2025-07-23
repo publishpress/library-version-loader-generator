@@ -1,7 +1,7 @@
 {
   "name": "publishpress/version-loader-generator",
   "description": "Composer script to generate the version loader files for libraries on PubilshPress",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "type": "library",
   "license": "GPL-2.0-or-later",
   "authors": [
