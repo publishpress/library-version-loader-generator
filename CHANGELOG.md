@@ -1,6 +1,10 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.2.4] - Jun 22, 2025
+
+- Improved version detection to sequentially check "version", "extra.version", and "extra.generator.version" properties in composer.json.
+
 ## [1.2.3] - Jun 22, 2025
 
 - Fix PHP warning when used with stable version releases.

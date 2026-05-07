@@ -25,7 +25,8 @@ Its requires a few settings in the `composer.json` file to correctly generate th
     "generator": {
       "lib-class-test": "interface_exists('PublishPress\\Psr\\Container\\ContainerInterface')",
       "action-initialize-priority": "-190",
-      "action-register-priority": "-200"
+      "action-register-priority": "-200",
+      "version": "1.0.0"
     }
   }
 }
