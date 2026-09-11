@@ -119,7 +119,13 @@ if (! function_exists(__NAMESPACE__ . '\\register{$versionStrForFunction}')) {
         define('{$includedConstantName}', __DIR__);
     }
 
-    if (! class_exists('{$namespace}\\VersionLoader')) {
+    if (! class_exists(__NAMESPACE__ . '\\VersionLoader', false)
+        && class_exists(__NAMESPACE__ . '\\Versions', false)
+    ) {
+        class_alias(__NAMESPACE__ . '\\Versions', __NAMESPACE__ . '\\VersionLoader');
+    }
+
+    if (! class_exists(__NAMESPACE__ . '\\VersionLoader', false)) {
         require_once __DIR__ . '/VersionLoader.php';
 
         add_action('plugins_loaded', [VersionLoader::class, 'initializeLatestVersion'], {$actionInitializingPriority}, 0);
@@ -181,7 +187,7 @@ function generateVersionClassFile($namespace, $version, $versionStrForFunction, 
 
 namespace {$namespace};
 
-if (! class_exists('{$namespaceStr}\\\\VersionLoader')) {
+if (! class_exists('{$namespaceStr}\\\\VersionLoader', false)) {
     /**
      * Newest-wins loader for this prefixed library (same idea as ActionScheduler_Versions).
      */
@@ -253,6 +259,10 @@ if (! class_exists('{$namespaceStr}\\\\VersionLoader')) {
             call_user_func(\$self->latestVersionCallback());
         }
     }
+}
+
+if (! class_exists('{$namespaceStr}\\\\Versions', false)) {
+    class_alias(VersionLoader::class, '{$namespaceStr}\\\\Versions');
 }
 
 TEMPLATE;

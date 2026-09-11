@@ -69,6 +69,11 @@ class versionLoaderGeneratorCest
         call_user_func('PublishPress\\PSRContainer\\register2Dot0Dot1Dot4');
 
         $loader = \PublishPress\PSRContainer\VersionLoader::getInstance();
+        $I->assertSame(
+            $loader,
+            \PublishPress\PsrContainer\Versions::getInstance(),
+            'Versions alias must share the VersionLoader registry'
+        );
         $I->assertEquals(
             ['2.0.1.4' => 'PublishPress\\PsrContainer\\initialize2Dot0Dot1Dot4'],
             $loader->getVersions(),
@@ -105,8 +110,18 @@ class versionLoaderGeneratorCest
             class_exists('PublishPress\\PsrContainer\\VersionLoader'),
             'Class PublishPress\\PsrContainer\\VersionLoader is not defined'
         );
+        $I->assertTrue(
+            class_exists('PublishPress\\PsrContainer\\Versions', false),
+            'Class PublishPress\\PsrContainer\\Versions is not aliased'
+        );
 
         $loader = \PublishPress\PsrContainer\VersionLoader::getInstance();
+
+        $I->assertSame(
+            $loader,
+            \PublishPress\PsrContainer\Versions::getInstance(),
+            'Versions alias must share the VersionLoader registry'
+        );
 
         $I->assertEquals(
             '2.0.1.4',

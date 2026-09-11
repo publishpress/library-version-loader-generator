@@ -4,6 +4,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.3.0] - Sep 11, 2026
 
 - Rename generated class/file from `Versions` / `Versions.php` to `VersionLoader` / `VersionLoader.php`.
+- Alias generated `VersionLoader` to `Versions` so mixed 1.2.x / 1.3.x copies share one version registry.
 - Write the generated Cest to `tests/codeception/Integration/VersionLoaderCest.php` (Cart layout) instead of `tests/wpunit/VersionsCest.php`.
 - Type-hint `IntegrationTester` instead of `WpunitTester`.
 - Add `extra.generator.test-file` to override the Cest path.

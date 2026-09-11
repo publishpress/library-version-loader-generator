@@ -12,7 +12,7 @@ The original library is a **pinned** `require-dev` dependency. Strauss copies an
 
 When several of our plugins ship the same prefixed library, **only the most recent version should load**. That follows the same newest-wins idea as [Action Scheduler](https://github.com/publishpress/team-handbook/blob/master/docs/dev/action-scheduler/README.md), and is automated by this Version Loader Generator. Action Scheduler itself is **not** prefixed; see that page for why.
 
-The generator writes `lib/include.php` and `lib/VersionLoader.php`. Those files register and initialize the library on `plugins_loaded` (register before initialize; typical priorities `-200` and `-190`). Plugins that consume the library should initialize on `plugins_loaded` at priority `-20` or later. Generator fields are listed under [Configure the version-loader generator](#configure-the-version-loader-generator).
+The generator writes `lib/include.php` and `lib/VersionLoader.php`. Those files register and initialize the library on `plugins_loaded` (register before initialize; typical priorities `-200` and `-190`). `VersionLoader` is aliased to `Versions` so a site that still has a 1.2.x copy of the same library shares one version registry. Plugins that consume the library should initialize on `plugins_loaded` at priority `-20` or later. Generator fields are listed under [Configure the version-loader generator](#configure-the-version-loader-generator).
 
 We can still clash with old copies of our own plugins. Those we control: ship updates, or tell the site to update.
 
