@@ -17,7 +17,7 @@ chmod g+w ../src/ ../dist/ 2>/dev/null || true
 
 # Fix ownership of any files that might be owned by root
 echo "Fixing file ownership..."
-sudo chown -R $(id -u):$(id -g) ../src/include.php ../src/Versions.php 2>/dev/null || true
+sudo chown -R $(id -u):$(id -g) ../src/include.php ../src/VersionLoader.php 2>/dev/null || true
 sudo chown -R $(id -u):$(id -g) ../vendor/squizlabs/php_codesniffer/CodeSniffer.conf 2>/dev/null || true
 
 # Add group write permissions to PHPCS config

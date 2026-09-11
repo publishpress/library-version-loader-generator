@@ -45,7 +45,7 @@ class versionLoaderGeneratorCest
         $I->assertTrue(
             DummyWPActionsStore::hasAction('plugins_loaded', [
                 'callback' => 'PublishPress\PsrContainer\register2Dot0Dot1Dot4',
-                'priority' => -100,
+                'priority' => -200,
                 'accepted_args' => 0,
             ]),
             'Action plugins_loaded, for PublishPress\PsrContainer\register2Dot0Dot1Dot4 is not registered'
@@ -54,13 +54,13 @@ class versionLoaderGeneratorCest
         $I->assertTrue(
             DummyWPActionsStore::hasAction('plugins_loaded', [
                 'callback' => [
-                    'PublishPress\\PsrContainer\\Versions',
+                    'PublishPress\\PsrContainer\\VersionLoader',
                     'initializeLatestVersion'
                 ],
-                'priority' => -90,
+                'priority' => -190,
                 'accepted_args' => 0,
             ]),
-            'Action plugins_loaded, for PublishPress\PsrContainer\Versions::initializeLatestVersion is not registered'
+            'Action plugins_loaded, for PublishPress\PsrContainer\VersionLoader::initializeLatestVersion is not registered'
         );
     }
 
@@ -68,10 +68,10 @@ class versionLoaderGeneratorCest
     {
         call_user_func('PublishPress\\PSRContainer\\register2Dot0Dot1Dot4');
 
-        $versions = \PublishPress\PSRContainer\Versions::getInstance();
+        $loader = \PublishPress\PSRContainer\VersionLoader::getInstance();
         $I->assertEquals(
             ['2.0.1.4' => 'PublishPress\\PsrContainer\\initialize2Dot0Dot1Dot4'],
-            $versions->getVersions(),
+            $loader->getVersions(),
             'Version is not registered'
         );
     }
@@ -97,26 +97,32 @@ class versionLoaderGeneratorCest
         );
     }
 
-    public function testGenerationOfVersionsClass(UnitTester $I)
+    public function testGenerationOfVersionLoaderClass(UnitTester $I)
     {
-        $I->seeFileFound($this->destinationPath . '/src/Versions.php');
+        $I->seeFileFound($this->destinationPath . '/src/VersionLoader.php');
 
         $I->assertTrue(
-            class_exists('PublishPress\\PsrContainer\\Versions'),
-            'Class PublishPress\\PsrContainer\\Versions is not defined'
+            class_exists('PublishPress\\PsrContainer\\VersionLoader'),
+            'Class PublishPress\\PsrContainer\\VersionLoader is not defined'
         );
 
-        $versions = \PublishPress\PsrContainer\Versions::getInstance();
+        $loader = \PublishPress\PsrContainer\VersionLoader::getInstance();
 
         $I->assertEquals(
             '2.0.1.4',
-            $versions->latestVersion(),
+            $loader->latestVersion(),
             'Latest version is not correct'
         );
     }
 
     public function testGenerationOfClassTest(UnitTester $I)
     {
-        $I->seeFileFound($this->destinationPath . '/tests/wpunit/VersionsCest.php');
+        $I->seeFileFound($this->destinationPath . '/tests/codeception/Integration/VersionLoaderCest.php');
+        $I->openFile($this->destinationPath . '/tests/codeception/Integration/VersionLoaderCest.php');
+        $I->seeInThisFile('class VersionLoaderCest');
+        $I->seeInThisFile('IntegrationTester');
+
+        $I->dontSeeFileFound('Versions.php', $this->destinationPath . '/src');
+        $I->dontSeeFileFound('VersionsCest.php', $this->destinationPath . '/tests/wpunit');
     }
 }
