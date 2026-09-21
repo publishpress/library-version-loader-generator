@@ -1,6 +1,11 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+
+- Remove `docs/dev/` prefixing walkthrough; point to the [team handbook](https://scribe.rambleventures.com/dev/team-handbook/).
+- Move usage details (`extra.generator`, runtime, library tests) to the handbook [Version Loader Generator](https://github.com/publishpress/team-handbook/blob/development/docs/dev/development/version-loader-generator.md) page. Keep this README as a stub plus develop/release.
+
 ## [1.3.1] - Sep 11, 2026
 
 - Alias generated `VersionLoader` to `Versions` so mixed 1.2.x / 1.3.x copies share one version registry.
